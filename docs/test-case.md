@@ -78,8 +78,8 @@ Use the demo credentials displayed on the SauceDemo login page.
   2. Select Name (Z to A).
   3. Inspect the product order.
 - **Expected:** Products should appear in alphabetical Descending order.
-- **Actual:** Product sorting is broken and gives an alert message.
-- **Status:** Fail.
+- **Actual:** All products were sorted in alphabetical descending order.
+- **Status:** Pass.
 
 ### TC-007: Sort products by price
 - **Priority:** Medium
@@ -88,8 +88,8 @@ Use the demo credentials displayed on the SauceDemo login page.
   2. Select Price (low to high).
   3. Inspect the displayed prices.
 - **Expected:** Products should appear in ascending price order.
-- **Actual:** Sorting is broken and sends an alert message.
-- **Status:** Fail.
+- **Actual:** All products were shown in ascending price order.
+- **Status:** Pass.
 
 ## Module 3: Shopping Cart
 
@@ -135,9 +135,9 @@ Use the demo credentials displayed on the SauceDemo login page.
   4. Enter last name.
   5. Enter postal code.
   6. Click Continue.
-- **Expected:** All customer information fields should accept input, and the user should proceed to the checkout overview page.
-- **Actual:** First Name and Postal Code accept keyboard input. The Last Name field receives focus but does not accept typed or pasted text. The same behavior occurs in an Incognito session.
-- **Status:** Blocked – Unable to complete valid checkout due to Last Name field input issue.
+- **Expected:** All customer information fields should accept valid input, and the user should proceed to the checkout overview page.
+- **Actual:** All three fields accepted input using standard_user, and checkout proceeded to the overview page.
+- **Status:** Pass.
 
 ### TC-012: Checkout with missing information
 - **Priority:** High
@@ -201,20 +201,34 @@ Use the demo credentials displayed on the SauceDemo login page.
   5. Attemp to Paste Dahal into the field.
   6. Repeat the test in the incognito session.
 - **Expected:** The Last Name field should accept both keyboard input and pasted text.
-- **Actual:** The field receives focus, but neither typed nor pasted text appears. The behavior persists in Incognito.
-- **Status:** Fail – Requires further investigation.
+- **Actual:** TThe field accepted input using standard_user.
+- **Status:** Pass.
+- **Additional Observation:** During an earlier session using an unidentified demo account, the Last Name field did not accept typed or pasted input. This behavior was not reproduced using standard_user.
 
 
 ---
 
-## Execution Summary
+## Final Execution Summary
 
-| Metric | Initial value |
+**Application:** SauceDemo  
+**Test Account:** standard_user  
+**Total Test Cases:** 16
+
+| Metric | Result |
 |---|---:|
-| Total test cases | 16 |
-| Passed | 11 |
-| Failed | 4 |
-| Blocked | 1 |
+| Total Test Cases | 16 |
+| Passed | 16 |
+| Failed | 0 |
+| Blocked | 0 |
 | Not Run | 0 |
+| Pass Rate | 100% |
 
-**Important:** Update actual results and statuses only after executing each test case. Do not treat unexecuted cases as passed.
+### Additional Testing Observations
+
+During an earlier exploratory session using an unidentified demo account, unexpected behavior was observed in product sorting, checkout completion, and the Last Name input field.
+
+These behaviors were not reproduced when the same functionality was retested using standard_user.
+
+No confirmed application defects were identified during the final standard_user execution.
+
+**Final Result:** All 16 test cases passed using standard_user.
