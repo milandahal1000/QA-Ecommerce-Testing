@@ -4,11 +4,10 @@ import time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-
-
+from config.test_data import BASE_URL
 class LoginPage:
 
-    URL = "https://www.saucedemo.com/"
+    URL = BASE_URL
 
     USERNAME = (By.ID, "user-name")
     PASSWORD = (By.ID, "password")
@@ -21,19 +20,19 @@ class LoginPage:
 
     def open(self):
         self.driver.get(self.URL)
-        time.sleep(1)
+        time.sleep(0)
 
     def enter_username(self, username):
         self.driver.find_element(*self.USERNAME).send_keys(username)
-        time.sleep(1)
+        time.sleep(0)
 
     def enter_password(self, password):
         self.driver.find_element(*self.PASSWORD).send_keys(password)
-        time.sleep(1)
+        time.sleep(0)
 
     def click_login(self):
         self.driver.find_element(*self.LOGIN_BUTTON).click()
-        time.sleep(1)
+        time.sleep(0)
 
     def login(self, username, password):
         self.enter_username(username)

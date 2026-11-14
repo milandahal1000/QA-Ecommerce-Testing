@@ -1,6 +1,7 @@
 
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from config.test_data import VALID_USERNAME, VALID_PASSWORD,INVALID_USERNAME, INVALID_PASSWORD
 
 from pages.login_page import LoginPage
 
@@ -8,7 +9,7 @@ from pages.login_page import LoginPage
 def test_valid_login(driver):
     login = LoginPage(driver)
     login.open()
-    login.login("standard_user", "secret_sauce")
+    login.login(VALID_USERNAME, VALID_PASSWORD)
 
     WebDriverWait(driver, 10).until(
         EC.url_contains("inventory.html")
@@ -20,7 +21,7 @@ def test_valid_login(driver):
 def test_invalid_login(driver):
     login = LoginPage(driver)
     login.open()
-    login.login("invalid_user", "wrong_password")
+    login.login(INVALID_USERNAME, INVALID_PASSWORD)
 
     assert "Username and password do not match" in (
         login.get_error_message()

@@ -4,6 +4,7 @@ import time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from config.test_data import FIRST_NAME, LAST_NAME, POSTAL_CODE
 
 
 class CheckoutPage:
@@ -30,19 +31,19 @@ class CheckoutPage:
     def click_checkout(self):
         self.driver.find_element(*self.CHECKOUT_BUTTON).click()
         self.wait.until(EC.url_contains("checkout-step-one.html"))
-        time.sleep(3)
+        time.sleep(0)
 
     def enter_first_name(self, first_name):
         self.driver.find_element(*self.FIRST_NAME).send_keys(first_name)
-        time.sleep(3)
+        time.sleep(0)
 
     def enter_last_name(self, last_name):
         self.driver.find_element(*self.LAST_NAME).send_keys(last_name)
-        time.sleep(3)
+        time.sleep(0)
 
     def enter_postal_code(self, postal_code):
         self.driver.find_element(*self.POSTAL_CODE).send_keys(postal_code)
-        time.sleep(3)
+        time.sleep(0)
 
     def enter_customer_information(self, first, last, postal):
         self.enter_first_name(first)
@@ -51,7 +52,7 @@ class CheckoutPage:
 
     def click_continue(self):
         self.driver.find_element(*self.CONTINUE_BUTTON).click()
-        time.sleep(3)
+        time.sleep(0)
 
     def get_error_message(self):
         error = self.wait.until(
@@ -77,7 +78,7 @@ class CheckoutPage:
     def click_finish(self):
         self.driver.find_element(*self.FINISH_BUTTON).click()
         self.wait.until(EC.visibility_of_element_located(self.COMPLETE_HEADER))
-        time.sleep(3)
+        time.sleep(0)
 
     def get_confirmation_message(self):
         return self.driver.find_element(*self.COMPLETE_HEADER).text
@@ -85,4 +86,4 @@ class CheckoutPage:
     def click_cancel(self):
         self.driver.find_element(*self.CANCEL_BUTTON).click()
         self.wait.until(EC.url_contains("cart.html"))
-        time.sleep(3)
+        time.sleep(0)

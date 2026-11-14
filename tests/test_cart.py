@@ -1,6 +1,7 @@
 
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from config.test_data import VALID_USERNAME, VALID_PASSWORD
 
 from pages.login_page import LoginPage
 from pages.cart_page import CartPage
@@ -9,7 +10,7 @@ from pages.cart_page import CartPage
 def login_to_saucedemo(driver):
     login = LoginPage(driver)
     login.open()
-    login.login("standard_user", "secret_sauce")
+    login.login(VALID_USERNAME, VALID_PASSWORD)
 
     WebDriverWait(driver, 10).until(
         EC.url_contains("inventory.html")

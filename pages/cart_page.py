@@ -4,7 +4,7 @@ import time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-
+from config.test_data import FIRST_NAME, LAST_NAME, POSTAL_CODE, BASE_URL
 
 class CartPage:
 
@@ -24,17 +24,17 @@ class CartPage:
     def add_product(self, product_id):
         button = (By.ID, f"add-to-cart-{product_id}")
         self.driver.find_element(*button).click()
-        time.sleep(1)
+        time.sleep(0)
 
 
     def add_backpack(self):
         self.driver.find_element(*self.ADD_BACKPACK).click()
-        time.sleep(1)
+        time.sleep(0)
 
     def open_cart(self):
         self.driver.find_element(*self.CART_ICON).click()
         self.wait.until(EC.url_contains("cart.html"))
-        time.sleep(1)
+        time.sleep(0)
 
     def get_cart_count(self):
         badges = self.driver.find_elements(*self.CART_BADGE)
@@ -49,9 +49,9 @@ class CartPage:
 
     def remove_backpack(self):
         self.driver.find_element(*self.REMOVE_BACKPACK).click()
-        time.sleep(1)
+        time.sleep(0)
 
     def continue_shopping(self):
         self.driver.find_element(*self.CONTINUE_SHOPPING).click()
         self.wait.until(EC.url_contains("inventory.html"))
-        time.sleep(1)
+        time.sleep(0)

@@ -1,6 +1,7 @@
 
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from config.test_data import FIRST_NAME, LAST_NAME, POSTAL_CODE, VALID_USERNAME, VALID_PASSWORD
 
 from pages.login_page import LoginPage
 from pages.cart_page import CartPage
@@ -10,7 +11,7 @@ from pages.checkout_page import CheckoutPage
 def prepare_checkout(driver):
     login = LoginPage(driver)
     login.open()
-    login.login("standard_user", "secret_sauce")
+    login.login(VALID_USERNAME, VALID_PASSWORD)
 
     WebDriverWait(driver, 10).until(
         EC.url_contains("inventory.html")
@@ -30,7 +31,7 @@ def test_checkout_with_valid_information(driver):
     checkout = prepare_checkout(driver)
 
     checkout.enter_customer_information(
-        "Milan", "Dahal", "44600"
+        FIRST_NAME, LAST_NAME, POSTAL_CODE
     )
     checkout.click_continue()
 
@@ -41,7 +42,7 @@ def test_checkout_missing_first_name(driver):
     checkout = prepare_checkout(driver)
 
     checkout.enter_customer_information(
-        "", "Dahal", "44600"
+        "", LAST_NAME, POSTAL_CODE
     )
     checkout.click_continue()
 
@@ -52,7 +53,7 @@ def test_checkout_missing_last_name(driver):
     checkout = prepare_checkout(driver)
 
     checkout.enter_customer_information(
-        "Milan", "", "44600"
+        FIRST_NAME, "", POSTAL_CODE
     )
     checkout.click_continue()
 
@@ -63,7 +64,7 @@ def test_checkout_missing_postal_code(driver):
     checkout = prepare_checkout(driver)
 
     checkout.enter_customer_information(
-        "Milan", "Dahal", ""
+        FIRST_NAME, LAST_NAME, ""
     )
     checkout.click_continue()
 
@@ -74,7 +75,7 @@ def test_order_overview_displays_product_and_prices(driver):
     checkout = prepare_checkout(driver)
 
     checkout.enter_customer_information(
-        "Milan", "Dahal", "44600"
+        FIRST_NAME, LAST_NAME, POSTAL_CODE
     )
     checkout.click_continue()
 
@@ -88,7 +89,7 @@ def test_complete_order_successfully(driver):
     checkout = prepare_checkout(driver)
 
     checkout.enter_customer_information(
-        "Milan", "Dahal", "44600"
+        FIRST_NAME, LAST_NAME, POSTAL_CODE
     )
     checkout.click_continue()
     checkout.click_finish()

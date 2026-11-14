@@ -4,6 +4,7 @@ import time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select, WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from config.test_data import FIRST_NAME, LAST_NAME, POSTAL_CODE
 
 
 class InventoryPage:
@@ -23,7 +24,7 @@ class InventoryPage:
 
     def get_product_names(self):
         products = self.wait_for_products()
-        time.sleep(3)
+        time.sleep(0)
         return [product.text for product in products]
 
     def get_product_prices(self):
@@ -33,9 +34,9 @@ class InventoryPage:
     def sort_by_name_a_to_z(self):
         dropdown = self.driver.find_element(*self.SORT_DROPDOWN)
         Select(dropdown).select_by_value("az")
-        time.sleep(3)
+        time.sleep(0)
 
     def sort_by_price_low_to_high(self):
         dropdown = self.driver.find_element(*self.SORT_DROPDOWN)
         Select(dropdown).select_by_value("lohi")
-        time.sleep(3)
+        time.sleep(0)
