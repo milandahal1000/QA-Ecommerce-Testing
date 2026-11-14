@@ -6,3 +6,4 @@ reports/*.html
 reports/screenshots/
 .idea/
 .vscode/
+/Evidence/
