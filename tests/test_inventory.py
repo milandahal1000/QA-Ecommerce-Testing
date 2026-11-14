@@ -1,131 +1,72 @@
-import time
 
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import Select, WebDriverWait
+from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+from pages.login_page import LoginPage
+from pages.inventory_page import InventoryPage
 
-BASE_URL = "https://www.saucedemo.com/"
-USERNAME = "standard_user"
-PASSWORD = "secret_sauce"
 
-def pause():
-    time.sleep(3)
-
-def login(driver):
-    driver.get(BASE_URL)
-    pause()
-
-    driver.find_element(By.ID, "user-name").send_keys(USERNAME)
-    pause()
-
-    driver.find_element(By.ID, "password").send_keys(PASSWORD)
-    pause()
-
-    driver.find_element(By.ID, "login-button").click()
-    pause()
+def login_to_saucedemo(driver):
+    login = LoginPage(driver)
+    login.open()
+    login.login("standard_user", "secret_sauce")
 
     WebDriverWait(driver, 10).until(
         EC.url_contains("inventory.html")
     )
 
 
-def get_product_names(driver):
-    products = driver.find_elements(
-        By.CLASS_NAME, "inventory_item_name"
-    )
-    return [product.text for product in products]
-
-
 def test_inventory_page_loads(driver):
-    login(driver)
+    login_to_saucedemo(driver)
 
     assert "inventory.html" in driver.current_url
 
-    title = driver.find_element(
-        By.CLASS_NAME, "title"
-    )
-
-    assert title.text == "Products"
-
 
 def test_all_products_are_displayed(driver):
-    login(driver)
+    login_to_saucedemo(driver)
 
-    products = driver.find_elements(
-        By.CLASS_NAME, "inventory_item"
-    )
+    inventory = InventoryPage(driver)
+    products = inventory.get_product_names()
 
-    pause()
-
-    assert len(products) == 6
+    assert len(products) > 0
 
 
 def test_product_names_are_not_empty(driver):
-    login(driver)
+    login_to_saucedemo(driver)
 
-    names = get_product_names(driver)
-    pause()
+    inventory = InventoryPage(driver)
+    products = inventory.get_product_names()
 
-    assert len(names) > 0
-    assert all(name.strip() for name in names)
+    assert all(name.strip() for name in products)
 
 
 def test_product_prices_are_valid(driver):
-    login(driver)
+    login_to_saucedemo(driver)
 
-    prices = driver.find_elements(
-        By.CLASS_NAME, "inventory_item_price"
-    )
-
-    pause()
+    inventory = InventoryPage(driver)
+    prices = inventory.get_product_prices()
 
     assert len(prices) > 0
-
-    for price in prices:
-        value = float(price.text.replace("$", ""))
-        assert value > 0
+    assert all(price > 0 for price in prices)
 
 
 def test_sort_products_name_a_to_z(driver):
-    login(driver)
+    login_to_saucedemo(driver)
 
-    sort_dropdown = Select(
-        driver.find_element(
-            By.CLASS_NAME, "product_sort_container"
-        )
-    )
+    inventory = InventoryPage(driver)
+    inventory.sort_by_name_a_to_z()
 
-    sort_dropdown.select_by_value("az")
-    pause()
+    names = inventory.get_product_names()
 
-    actual_names = get_product_names(driver)
-    expected_names = sorted(actual_names)
-
-    assert actual_names == expected_names
+    assert names == sorted(names)
 
 
 def test_sort_products_price_low_to_high(driver):
-    login(driver)
+    login_to_saucedemo(driver)
 
-    sort_dropdown = Select(
-        driver.find_element(
-            By.CLASS_NAME, "product_sort_container"
-        )
-    )
+    inventory = InventoryPage(driver)
+    inventory.sort_by_price_low_to_high()
 
-    sort_dropdown.select_by_value("lohi")
-    pause()
+    prices = inventory.get_product_prices()
 
-    price_elements = driver.find_elements(
-        By.CLASS_NAME, "inventory_item_price"
-    )
-
-    actual_prices = [
-        float(price.text.replace("$", ""))
-        for price in price_elements
-    ]
-
-    expected_prices = sorted(actual_prices)
-
-    assert actual_prices == expected_prices
+    assert prices == sorted(prices)

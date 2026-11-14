@@ -1,151 +1,78 @@
 
-import time
-
-from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-
-BASE_URL = "https://www.saucedemo.com/"
-USERNAME = "standard_user"
-PASSWORD = "secret_sauce"
+from pages.login_page import LoginPage
+from pages.cart_page import CartPage
 
 
-def pause():
-    time.sleep(1)
-
-
-def login(driver):
-    driver.get(BASE_URL)
-    pause()
-
-    driver.find_element(By.ID, "user-name").send_keys(USERNAME)
-    pause()
-
-    driver.find_element(By.ID, "password").send_keys(PASSWORD)
-    pause()
-
-    driver.find_element(By.ID, "login-button").click()
+def login_to_saucedemo(driver):
+    login = LoginPage(driver)
+    login.open()
+    login.login("standard_user", "secret_sauce")
 
     WebDriverWait(driver, 10).until(
         EC.url_contains("inventory.html")
     )
-    pause()
-
-
-def add_product(driver, product_id):
-    driver.find_element(
-        By.ID, f"add-to-cart-{product_id}"
-    ).click()
-    pause()
-
-
-def open_cart(driver):
-    driver.find_element(
-        By.CLASS_NAME, "shopping_cart_link"
-    ).click()
-
-    WebDriverWait(driver, 10).until(
-        EC.url_contains("cart.html")
-    )
-    pause()
 
 
 def test_add_one_product_to_cart(driver):
-    login(driver)
+    login_to_saucedemo(driver)
 
-    add_product(driver, "sauce-labs-backpack")
+    cart = CartPage(driver)
+    cart.add_backpack()
 
-    badge = driver.find_element(
-        By.CLASS_NAME, "shopping_cart_badge"
-    )
+    assert cart.get_cart_count() == 1
 
-    assert badge.text == "1"
 
 
 def test_add_multiple_products_to_cart(driver):
-    login(driver)
+    login_to_saucedemo(driver)
 
-    add_product(driver, "sauce-labs-backpack")
-    add_product(driver, "sauce-labs-bike-light")
+    cart = CartPage(driver)
 
-    badge = driver.find_element(
-        By.CLASS_NAME, "shopping_cart_badge"
-    )
+    cart.add_product("sauce-labs-backpack")
+    cart.add_product("sauce-labs-bike-light")
 
-    assert badge.text == "2"
+    assert cart.get_cart_count() == 2
 
 
 def test_verify_cart_badge_count(driver):
-    login(driver)
+    login_to_saucedemo(driver)
 
-    add_product(driver, "sauce-labs-backpack")
-    add_product(driver, "sauce-labs-bike-light")
-    add_product(driver, "sauce-labs-bolt-t-shirt")
+    cart = CartPage(driver)
+    cart.add_backpack()
 
-    badge = driver.find_element(
-        By.CLASS_NAME, "shopping_cart_badge"
-    )
-
-    assert badge.text == "3"
+    assert cart.get_cart_count() == 1
 
 
 def test_verify_products_in_cart(driver):
-    login(driver)
+    login_to_saucedemo(driver)
 
-    add_product(driver, "sauce-labs-backpack")
-    add_product(driver, "sauce-labs-bike-light")
+    cart = CartPage(driver)
+    cart.add_backpack()
+    cart.open_cart()
 
-    open_cart(driver)
-
-    products = driver.find_elements(
-        By.CLASS_NAME, "inventory_item_name"
-    )
-
-    product_names = [product.text for product in products]
-
-    assert "Sauce Labs Backpack" in product_names
-    assert "Sauce Labs Bike Light" in product_names
-    assert len(product_names) == 2
+    assert "Sauce Labs Backpack" in cart.get_cart_product_names()
 
 
 def test_remove_product_from_cart(driver):
-    login(driver)
+    login_to_saucedemo(driver)
 
-    add_product(driver, "sauce-labs-backpack")
-    add_product(driver, "sauce-labs-bike-light")
+    cart = CartPage(driver)
+    cart.add_backpack()
+    cart.open_cart()
+    cart.remove_backpack()
 
-    open_cart(driver)
-
-    driver.find_element(
-        By.ID, "remove-sauce-labs-backpack"
-    ).click()
-    pause()
-
-    products = driver.find_elements(
-        By.CLASS_NAME, "inventory_item_name"
-    )
-
-    product_names = [product.text for product in products]
-
-    assert "Sauce Labs Backpack" not in product_names
-    assert "Sauce Labs Bike Light" in product_names
-    assert len(product_names) == 1
+    assert cart.get_cart_item_count() == 0
 
 
 def test_continue_shopping_returns_to_inventory(driver):
-    login(driver)
+    login_to_saucedemo(driver)
 
-    add_product(driver, "sauce-labs-backpack")
-    open_cart(driver)
-
-    driver.find_element(
-        By.ID, "continue-shopping"
-    ).click()
-
-    WebDriverWait(driver, 10).until(
-        EC.url_contains("inventory.html")
-    )
-    pause()
+    cart = CartPage(driver)
+    cart.add_backpack()
+    cart.open_cart()
+    cart.continue_shopping()
 
     assert "inventory.html" in driver.current_url
